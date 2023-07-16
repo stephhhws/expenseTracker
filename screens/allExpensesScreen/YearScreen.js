@@ -13,26 +13,33 @@ const YearScreen = ({ navigation }) => {
     const [years, setYears] = useState([]);
 
     useEffect(() => {
-        expenses.sort((a, b) => new Date(a.date) - new Date(b.date));
-        const startYear = parseInt(expenses[0].date.slice(0, 4))
-        const endYear = parseInt(expenses[expenses.length - 1].date.slice(0, 4))
-        const years = [];
-        for (let i = startYear; i <= endYear; i++) {
-            years.unshift(i);
+        if (expenses && expenses.length > 0) {
+            expenses.sort((a, b) => new Date(a.date) - new Date(b.date));
+            const startYear = parseInt(expenses[0].date.slice(0, 4));
+            const endYear = parseInt(expenses[expenses.length - 1].date.slice(0, 4));
+            const years = [];
+            for (let i = startYear; i <= endYear; i++) {
+                years.unshift(i);
+            }
+            setYears(years);
         }
-        setYears(years);
-    }, [expenses])
+    }, [expenses]);
+    
 
 
     return (
         <View style={styles.container}>
-            {years.map((year) => (
+            {years.length > 0 ? 
+            years.map((year) => (
                 <Pressable key={year} onPress={() => navigation.navigate('Month', { year })}>
                     <View style={styles.yearItem}>
                         <Text style={styles.yearText}> {year} </Text>
                     </View>
                 </Pressable>
-            ))}
+            ))
+            :
+            <Text style={styles.text}>No Data Found</Text>
+        }
         </View >
     )
 };
@@ -64,5 +71,12 @@ const styles = StyleSheet.create({
         color: "white",
         fontWeight: 'bold',
         fontSize: 15
+    },
+    text: {
+        textAlign: 'center',
+        padding: 10,
+        color: '#5c3f2f',
+        fontSize: 18,
+
     }
 });

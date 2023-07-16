@@ -17,17 +17,34 @@
 
   export const GlobalStyles = {
     colors: {
-      primary50: '#e6ccb2', // beige
-      primary100: '#ede0d4', // lightbeige
-      primary200: '#83978C',// green
-      primary400: '#93939B', //greyblue
-      primary500: '#7A848D', // blue
-      primary700: '#b1c0c4', // light blue
-      primary800: '#e6b8a2', // pink
-      accent500: '#976666', // red
+      primary50: '#7f5539', // Lightpink
+      primary100: '#ede0d4', //  light beige
+      primary200: '#7f5539',// brown
+      primary400: '#e6ccb2', // Green
+      primary500: '#edc4b3', // pink
+      primary700: '#d69c7c', // orange
+      primary800: '#b1c0c4', // light blue
+      accent500: '#976666', // Red
       error50: '#fcc4e4',
       error500: '#e9ecef',
       gray500: '#39324a',
       gray700: '#221c30',
     },
   };
+//   Beige: '#e6ccb2',
+//   White: '#edeadd',
+//   LightBeige: '#ede0d4',
+//   DarkBeighe: '#b08968',
+//   Brown: '#7f5539',
+//   LightBrown: '#9c6644',
+//   Green: '#83978C',
+//   GreyBlue: '#93939B',
+//   Grey: '#DCDDD5',
+//   Blue : '#7A848D',
+//   Orange: '#CA774B',
+//   yellow: '#D9913C',
+//   LightPink: '#edc4b3',
+//   LightBlue: '#b1c0c4',
+//   Red: '#976666',
+//   Pink: '#e6b8a2',
+// }
