@@ -6,9 +6,12 @@ import FlatButton from '../../ui/FlatButton';
 import AuthForm from './AuthForm';
 import { GlobalStyles } from '../../constants/styles';
 
+// the AuthContent component takes two prop - isLogin (boolean) and onAuthenticate function 
 function AuthContent({ isLogin, onAuthenticate }) {
+  // use the navigation object to switch between login * signup screens
   const navigation = useNavigation();
 
+  // initialse the state
   const [credentialsInvalid, setCredentialsInvalid] = useState({
     email: false,
     password: false,
@@ -16,6 +19,7 @@ function AuthContent({ isLogin, onAuthenticate }) {
     confirmPassword: false,
   });
 
+  // navigate between the login and signup screen 
   function switchAuthModeHandler() {
     if (isLogin) {
       navigation.replace('Signup');
@@ -24,6 +28,7 @@ function AuthContent({ isLogin, onAuthenticate }) {
     }
   }
 
+  // take the user credentials and check if the email and password are valid
   function submitHandler(credentials) {
     let { email, confirmEmail, password, confirmPassword } = credentials;
 
@@ -49,6 +54,7 @@ function AuthContent({ isLogin, onAuthenticate }) {
       });
       return;
     }
+    // pass the email & password for authentication
     onAuthenticate({ email, password });
   }
 

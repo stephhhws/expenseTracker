@@ -17,6 +17,7 @@ function AuthForm({ isLogin, onSubmit, credentialsInvalid }) {
     confirmPassword: passwordsDontMatch,
   } = credentialsInvalid;
 
+  //This function updates the state of the respective input field based on the inputType provided.
   function updateInputValueHandler(inputType, enteredValue) {
     switch (inputType) {
       case 'email':
@@ -34,6 +35,7 @@ function AuthForm({ isLogin, onSubmit, credentialsInvalid }) {
     }
   }
 
+  // the function calls the onSubmit prop function by passing the current input values
   function submitHandler() {
     onSubmit({
       email: enteredEmail,
@@ -43,9 +45,11 @@ function AuthForm({ isLogin, onSubmit, credentialsInvalid }) {
     });
   }
 
+  // the confirm field would only appear if the form is for sign-up (isLogin is false)
   return (
     <View style={styles.form}>
       <View>
+        {/* input receives 5 props*/}
         <Input
           label="Email Address"
           onUpdateValue={updateInputValueHandler.bind(this, 'email')}

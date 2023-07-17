@@ -5,14 +5,16 @@ import { GlobalStyles } from '../../constants/styles';
 import ExpensesOutput from '../../components/ExpensesOutput/ExpensesOutput';
 import { ExpensesContext } from '../../store/expenses-context';
 
+
 const AllExpensesScreen = ({ route }) => {
+    // destructure the expenses data from expensesContext
     const { expenses } = useContext(ExpensesContext);
+    // initialize state variable for filtered expenses
     const [filteredExpenses, setFilteredExpenses] = useState([]);
-    // console.log(filteredExpenses)
-    // console.log(route.params.year)
-    // console.log(route.params.month)
+
 
     useEffect(() => {
+        // create a new filtered array of expenses for the selected year and month
         const filtered = expenses.filter(expense => {
             const [year, month, day] = expense.date.split('-');
             const expenseDate = new Date(year, month - 1, day);
@@ -21,10 +23,12 @@ const AllExpensesScreen = ({ route }) => {
                 (expenseDate.getMonth() + 1) === route.params.month // JavaScript month range is 0-11
             );
         });
+        // Set the state of 'filteredExpenses' to the newly filtered array
         setFilteredExpenses(filtered);
     }, [route.params.year, route.params.month, expenses]);
 
     return (
+        // render the expensesOutput component with the filtered expense
         <View style={styles.container}>
             <ExpensesOutput
                 expenses={filteredExpenses}

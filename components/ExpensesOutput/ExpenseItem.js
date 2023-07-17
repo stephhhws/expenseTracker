@@ -5,9 +5,11 @@ import { GlobalStyles } from '../../constants/styles';
 import { getFormattedDate } from '../../util/date';
 
 function ExpenseItem({ id, description, amount, date }) {
+  // use the useNavigation hook to get the navigation object 
   const navigation = useNavigation();
-  // const jsDate = new Date(date.seconds * 1000);  // convert Firestore timestamp to JavaScript Date
 
+  // Define a function that is called when the expense item is pressed
+  // This function navigates to the manage expense screen and passes the id of the expense item
   function expensePressHandler() {
     navigation.navigate('ManageExpense', {
       expenseId: id
@@ -16,6 +18,7 @@ function ExpenseItem({ id, description, amount, date }) {
 
   return (
     <Pressable
+    // when the pressable view is pressed, call the expensePressHandler function 
       onPress={expensePressHandler}
       style={({ pressed }) => pressed && styles.pressed}
     >

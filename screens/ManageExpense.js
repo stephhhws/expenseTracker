@@ -7,41 +7,40 @@ import IconButton from '../components/UI/IconButton';
 import LoadingOverlay from '../components/UI/LoadingOverlay';
 import { GlobalStyles } from '../constants/styles';
 import { ExpensesContext } from '../store/expenses-context';
-// import { storeExpense, updateExpense, deleteExpense } from '../util/http';
-// import { addExpense, deleteExpense, updateExpense } from '../util/fireBase';
-// import { AuthContext } from '../store/auth-context';
 import { v4 as uuidv4 } from 'uuid';
 
+
 function ManageExpense({ route, navigation }) {
+  // state variable to manage submission status and error status 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState();
 
+  // Access the expenses context 
   const expensesCtx = useContext(ExpensesContext);
 
+  // get the expense ID from the navigation parameters, and check if we are editing an exisiting expense 
   const editedExpenseId = route.params?.expenseId;
   const isEditing = !!editedExpenseId;
 
-  // const authCtx = useContext(AuthContext);
-  // const userId = authCtx.userId;
-  // const token = authCtx.token;
-  // console.log(userId)
-  // console.log(token)
   console.log(expensesCtx.expenses)
 
+  // find the selected expense in the context based on the Id
   const selectedExpense = expensesCtx.expenses.find(
     (expense) => expense.id === editedExpenseId
   );
 
+  // set the navigation title based on whether we are editing or adding a new expense
   useLayoutEffect(() => {
     navigation.setOptions({
       title: isEditing ? 'Edit Expense' : 'Add Expense',
     });
   }, [navigation, isEditing]);
 
+  // Handler for deleting an expense 
   async function deleteExpenseHandler() {
     setIsSubmitting(true);
     try {
-      // await deleteExpense(userId, editedExpenseId);
+      // use the deleteExpense function in expenseContext with the editedExpenseId
       await expensesCtx.deleteExpense(editedExpenseId);
       navigation.goBack();
     } catch (error) {
@@ -50,30 +49,38 @@ function ManageExpense({ route, navigation }) {
     }
   }
 
+  // if the user press cancel, go back to the last page 
   function cancelHandler() {
     navigation.goBack();
   }
 
+  // handler for confirming the action (either updating an exisiting expense or adding expense)
+  // expenseData comes from expense form component, the form data is passed as an argument to the confirmHandler function
   async function confirmHandler(expenseData) {
     setIsSubmitting(true);
     try {
-
+      // check if expenseData is undefined, null or contain any undefined value 
       if (!expenseData || Object.values(expenseData).includes(undefined)) {
         throw new Error('Invalid expense data');
       }
 
+      // if the component is in edit mode
       if (isEditing) {
-        console.log(editedExpenseId)
-        console.log(expenseData)
+        // create a new object that merge the updated expense data and the ID of the expense being edited  
+        // which combines all properties from the expenseData object and adds a new property id with the value of editedExpenseId
         const updatedexpenseData = {...expenseData, id: editedExpenseId}
-        console.log(updatedexpenseData)
-        // await updateExpense(userId, editedExpenseId, expenseData);
+
+        // call the updateExpense method from expenses context
         await expensesCtx.updateExpense(editedExpenseId, updatedexpenseData);
-      } else {
+      } 
+      // if the component is in add mode 
+      else {
+        // generate a new unique ID for the expense 
         const expenseId = uuidv4();
+
+        // create a new object that merges the provided expense data and the newly generated ID
         expenseData = {...expenseData, id: expenseId}
-        // const newExpense = await addExpense(userId, expenseData);
-        // console.log(expenseData)
+        // call the addExpense method from the expenses context 
         await expensesCtx.addExpense(expenseData);
       }
       navigation.goBack();
@@ -92,6 +99,8 @@ function ManageExpense({ route, navigation }) {
     return <LoadingOverlay />;
   }
 
+  // render the expenseform component, passing the necessary props
+  // if we are editing an exisiting expense, also render a delete button 
   return (
     <View style={styles.container}>
       <ExpenseForm

@@ -25,6 +25,8 @@ import LoginButton from './ui/loginButton';
 const Stack = createNativeStackNavigator();
 const BottomTabs = createBottomTabNavigator();
 
+
+/* Stack: display screens if user does not log in, show this stack */
 function AuthStack() {
   return (
     <Stack.Navigator
@@ -40,6 +42,7 @@ function AuthStack() {
   );
 }
 
+/* Stack: display screens of the expense summary with different time period */
 function AllExpensesStack() {
   return (
     <Stack.Navigator
@@ -54,6 +57,7 @@ function AllExpensesStack() {
   );
 }
 
+/* BottomTab: display screens of Recent expenses & All expenses */
 function ExpensesOverview() {
   const authCtx = useContext(AuthContext)
   return (
@@ -110,12 +114,18 @@ function ExpensesOverview() {
   );
 }
 
+/* display screen according to AuthContext
+if the user is not authenticated -> display the AuthStack for logging in & signing up  
+if the user is authenticated -> display the ExpensesOverview stack and ManageExpense screen */
+
 function Navigation() {
   const authCtx = useContext(AuthContext);
 
   return (
     <NavigationContainer>
+      {/* if the user is not authenticated -> display the AuthStack for logging in & signing up  */}
       {!authCtx.isAuthenticated && <AuthStack />}
+      {/* if the user is authenticated -> display the Stack Navigation with Expenses overview and Manage Expense */}
       {authCtx.isAuthenticated && (
         <Stack.Navigator
           screenOptions={{
@@ -125,6 +135,7 @@ function Navigation() {
         >
           <Stack.Screen
             name="Expenses"
+            // this refers to function of stack  
             component={ExpensesOverview}
             options={{ headerShown: false }}
           />
@@ -141,24 +152,25 @@ function Navigation() {
   );
 }
 
+/* this function is used for the log in process and authentication, it calls the 
+navigation function at last */
 function Root() {
+  // the initial state is true (user is trying to log in)
   const [isTryingLogin, setIsTryingLogin] = useState(true);
 
   const authCtx = useContext(AuthContext);
 
+  // retrieve the user log in token and local Id, the storeToken is returned, proceed to authentication
   useEffect(() => {
     async function fetchToken() {
       const storedToken = await AsyncStorage.getItem('token');
       const storeduserId = await AsyncStorage.getItem('localId');
-
-      if (storedToken) {  // get the token
+      if (storedToken) {  // get the token and do authentication
         authCtx.authenticate(storedToken, storeduserId);
       }
-
-      setIsTryingLogin(false);
+      setIsTryingLogin(false); // update the state 
       SplashScreen.hideAsync();
     }
-
     fetchToken();
   }, []);
 
@@ -168,6 +180,7 @@ function Root() {
     }
   }, [isTryingLogin]);
 
+  // display the screen according to authentication status 
   return <Navigation />;
 }
 
@@ -176,6 +189,7 @@ export default function App() {
   return (
     <>
       <StatusBar style="light" />
+      {/* as we have to use AuthContext & ExpenseContext, need to wrap with the provider  */}
       <AuthContextProvider>
         <ExpensesContextProvider>
           <Root />

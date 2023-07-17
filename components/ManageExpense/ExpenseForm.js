@@ -7,9 +7,10 @@ import { getFormattedDate } from '../../util/date';
 import { GlobalStyles } from '../../constants/styles';
 
 function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
-
+  // initial values of the state for form fields 
   const [inputs, setInputs] = useState({
-    amount: {
+    // if null, set to empty string 
+    amount: { 
       value: defaultValues ? defaultValues.amount.toString() : '',
       isValid: true,
     },
@@ -18,39 +19,54 @@ function ExpenseForm({ submitButtonLabel, onCancel, onSubmit, defaultValues }) {
       isValid: true,
     },
     description: {
-    value: defaultValues ? defaultValues.description : '',
-    isValid: true,
+      value: defaultValues ? defaultValues.description : '',
+      isValid: true,
   },
   });
 
-function inputChangedHandler(inputIdentifier, enteredValue) {
-  setInputs((curInputs) => {
-    return {
-      ...curInputs,
-      [inputIdentifier]: { value: enteredValue, isValid: true },
+  // handler for input field changes 
+  function inputChangedHandler(inputIdentifier, enteredValue) {
+    // update the state to the currentInput
+    setInputs((curInputs) => {
+      return {
+        // spread operator to keep old state data 
+        ...curInputs,
+        // dynamically update the state of specified field based on the inputIdentifier (e.g., "amount", "date", "description")
+        // and set its value to the entered value, and assuming the entered value is valid, set isValid to true
+        [inputIdentifier]: { value: enteredValue, isValid: true },
+      };
+    });
+  }
+
+  // handle the form submission
+  function submitHandler() {
+    // gathering form data from state and storing it in an object 
+    const expenseData = {
+      // convert the amount from string to number with the plus operator
+      amount: +inputs.amount.value,
+      // get the date value from state 
+      date: inputs.date.value, 
+      // get the descirption value from the state
+      description: inputs.description.value,
     };
-  });
-}
-
-function submitHandler() {
-  // console.log("handler", inputs.date.value);
-  const expenseData = {
-    amount: +inputs.amount.value,
-    date: inputs.date.value, 
-    description: inputs.description.value,
-  };
 
 
-
+  // validate the input  fields
+  // check the amount is a valid number and is more than 0 
   const amountIsValid = !isNaN(expenseData.amount) && expenseData.amount > 0;
-  // const dateIsValid = expenseData.date.toString() !== 'Invalid Date';
-  const dateIsValid = /^\d{4}-\d{2}-\d{2}$/.test(expenseData.date); // validate date format
+  // validate the date format using regex to match the pattern "YYYY-MM-DD"
+  const dateIsValid = /^\d{4}-\d{2}-\d{2}$/.test(expenseData.date);
+  // check that the description is not empty or just whitespace
   const descriptionIsValid = expenseData.description.trim().length > 0;
+
+  // if validation fails, update the state with the invalid field and return 
+  // This will stop the function from executing further and the form won't be submitted
 
   if (!amountIsValid || !dateIsValid || !descriptionIsValid) {
     // Alert.alert('Invalid input', 'Please check your input values');
     setInputs((curInputs) => {
       return {
+        // For each input field, set the value as before and set isValid to the result of the validation
         amount: { value: curInputs.amount.value, isValid: amountIsValid },
         date: { value: curInputs.date.value, isValid: dateIsValid },
         description: {
@@ -61,7 +77,7 @@ function submitHandler() {
     });
     return;
   }
-
+  // If all fields are valid, call the onSubmit prop function with the form data
   onSubmit(expenseData);
 }
 
@@ -70,6 +86,7 @@ const formIsInvalid =
   !inputs.date.isValid ||
   !inputs.description.isValid;
 
+  // render each of the input fields
 return (
   <View style={styles.form}>
     <Text style={styles.title}>Your Expense</Text>

@@ -6,21 +6,29 @@ import { GlobalStyles } from '../../constants/styles';
 import { ExpensesContext } from '../../store/expenses-context';
 
 
-// const years = [2023]; // Update this based on your requirement
 
 const YearScreen = ({ navigation }) => {
+    // get the expenses data from expenseContext
     const { expenses } = useContext(ExpensesContext);
+
+    // initialise the state for storing the range of years with expense data 
     const [years, setYears] = useState([]);
 
     useEffect(() => {
+        // sort the expenses based on the date 
         if (expenses && expenses.length > 0) {
             expenses.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            // extract the start year and the end year from our expenses
             const startYear = parseInt(expenses[0].date.slice(0, 4));
             const endYear = parseInt(expenses[expenses.length - 1].date.slice(0, 4));
             const years = [];
+
+            // create an array of years from startYear to endYear
             for (let i = startYear; i <= endYear; i++) {
                 years.unshift(i);
             }
+            // update the year state 
             setYears(years);
         }
     }, [expenses]);
@@ -28,7 +36,9 @@ const YearScreen = ({ navigation }) => {
 
 
     return (
+        // container view for the screen 
         <View style={styles.container}>
+            {/* // if there are available year data, map each year to a pressable component  */}
             {years.length > 0 ? 
             years.map((year) => (
                 <Pressable key={year} onPress={() => navigation.navigate('Month', { year })}>

@@ -8,7 +8,10 @@ const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL",
 
 const MonthScreen = ({ navigation, route }) => (
     <View style={styles.container}>
+        {/* render each month in the months array  */}
             {months.map((month, idx) => (
+                // for each month, it is a pressable component which has the onpress function
+                // When pressed, it navigates to the 'AllExpenseScreen' screen with the selected year from 'route.params' and the selected month (idx + 1).
                 <Pressable key={month} style={styles.monthWrapper} onPress={() => navigation.navigate('Expense', { year: route.params.year, month: idx + 1})}>
                     <View style={styles.monthItem}>
                         <Text style={styles.monthText}> {month} </Text>
